@@ -37,8 +37,17 @@ struct KnowledgeDetailView: View {
                         Label(point.bookTitle, systemImage: "doc.text").font(.system(size: 14, weight: .semibold))
                         Text("\(point.chapter) · 第 \(point.pageNumber) 页")
                             .font(.system(size: 12)).foregroundStyle(ZT.muted)
-                        Text("这里将在接入 PDFKit 后展示可验证的原文片段，并支持点击跳转到 PDF 对应页面。当前页码为示例数据。")
-                            .font(.system(size: 13)).foregroundStyle(ZT.muted)
+                        if !point.evidenceText.isEmpty {
+                            Text("“\(point.evidenceText)”")
+                                .font(.system(size: 14))
+                                .foregroundStyle(ZT.ink)
+                                .padding(12)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(ZT.paper, in: RoundedRectangle(cornerRadius: 12))
+                        } else {
+                            Text("该知识点暂无已校验的原文摘录。")
+                                .font(.system(size: 13)).foregroundStyle(ZT.muted)
+                        }
                     }
                 }
 
