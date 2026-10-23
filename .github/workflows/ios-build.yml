@@ -33,6 +33,9 @@ jobs:
       - name: List schemes
         run: xcodebuild -list -project ZhiTu.xcodeproj
 
+      - name: Prepare build output directory
+        run: mkdir -p build/artifacts
+
       - name: Build for iOS Simulator
         shell: bash
         run: |
