@@ -14,15 +14,37 @@ final class StudyBook {
     var author: String
     var createdAt: Date
     var sourceURL: String?
+    var localFileName: String
     var pageCount: Int
+    var extractionStatus: String
+    var textCharacterCount: Int
 
-    init(title: String, author: String = "", pageCount: Int = 0, sourceURL: String? = nil) {
+    init(title: String, author: String = "", pageCount: Int = 0, sourceURL: String? = nil,
+         localFileName: String = "", extractionStatus: String = "待解析", textCharacterCount: Int = 0) {
         self.id = UUID()
         self.title = title
         self.author = author
         self.createdAt = .now
         self.pageCount = pageCount
         self.sourceURL = sourceURL
+        self.localFileName = localFileName
+        self.extractionStatus = extractionStatus
+        self.textCharacterCount = textCharacterCount
+    }
+}
+
+@Model
+final class BookPage {
+    var id: UUID
+    var bookID: UUID
+    var pageNumber: Int
+    var text: String
+
+    init(bookID: UUID, pageNumber: Int, text: String) {
+        self.id = UUID()
+        self.bookID = bookID
+        self.pageNumber = pageNumber
+        self.text = text
     }
 }
 
@@ -47,6 +69,23 @@ final class KnowledgePoint {
         self.bookTitle = bookTitle
         self.chapter = chapter
         self.pageNumber = pageNumber
+    }
+}
+
+@Model
+final class KnowledgeEdge {
+    var id: UUID
+    var bookTitle: String
+    var fromTitle: String
+    var toTitle: String
+    var relationType: String
+
+    init(bookTitle: String, fromTitle: String, toTitle: String, relationType: String = "related") {
+        self.id = UUID()
+        self.bookTitle = bookTitle
+        self.fromTitle = fromTitle
+        self.toTitle = toTitle
+        self.relationType = relationType
     }
 }
 
