@@ -131,9 +131,10 @@ struct GraphView: View {
     private func nodePositions(in size: CGSize) -> [Int: CGPoint] {
         let center = CGPoint(x: size.width / 2, y: size.height / 2)
         var result: [Int: CGPoint] = [0: center]
-        let count = max(graphTitles.count - 1, 1)
+        guard graphTitles.count > 1 else { return result }
+        let count = Double(graphTitles.count - 1)
         for index in 1..<graphTitles.count {
-            let angle: Double = (Double(index - 1) / Double(count)) * 2.0 * Double.pi - Double.pi / 2.0
+            let angle = (Double(index - 1) / count) * 2.0 * Double.pi - Double.pi / 2.0
             let radiusX = min(size.width * 0.34, 130)
             let radiusY = min(size.height * 0.31, 190)
             result[index] = CGPoint(
