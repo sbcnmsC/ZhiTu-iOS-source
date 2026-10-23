@@ -6,6 +6,7 @@ struct AIConcept: Decodable {
     let summary: String
     let page: Int
     let chapter: String?
+    let evidence: String
 }
 
 struct AIRelation: Decodable {
@@ -21,6 +22,7 @@ struct AIQuestion: Decodable {
     let answer: String
     let explanation: String
     let page: Int
+    let evidence: String
 }
 
 struct AIAnalysisResult: Decodable {
@@ -146,11 +148,12 @@ enum AIService {
         如果片段不足以支持结论，少生成条目，不要猜测。所有 page 必须是来源标签中出现的 PDF 页码。
         输出必须是纯 JSON，结构如下：
         {
-          "concepts":[{"title":"知识点名","summary":"简洁准确的说明","page":1,"chapter":"章节名"}],
+          "concepts":[{"title":"知识点名","summary":"简洁准确的说明","page":1,"chapter":"章节名","evidence":"从该页逐字摘录至少 8 个字符的原文短句"}],
           "relations":[{"from":"已输出的知识点名","to":"已输出的知识点名","type":"prerequisite|related|contains"}],
-          "questions":[{"conceptTitle":"已输出的知识点名","stem":"题干","options":["A","B","C","D"],"answer":"必须与其中一个选项完全一致","explanation":"基于原文的解析","page":1}]
+          "questions":[{"conceptTitle":"已输出的知识点名","stem":"题干","options":["A","B","C","D"],"answer":"必须与其中一个选项完全一致","explanation":"基于原文的解析","page":1,"evidence":"支持题目或答案的原文短句"}]
         }
         concepts 最多 18 个，relations 最多 30 条，questions 最多 12 道。
+        evidence 必须从对应页的原文逐字摘录，不得改写或编造；如果找不到足够长的原文证据，就不要输出该知识点或题目。
         题目应当可由文本作答，避免教材没有支持的事实。不要输出 Markdown 代码围栏。
         教材标题：\(bookTitle)
         教材片段：
