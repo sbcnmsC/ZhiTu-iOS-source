@@ -1,6 +1,7 @@
 import SwiftUI
 import PDFKit
 import SwiftData
+import UIKit
 
 struct PDFReaderView: View {
     let book: StudyBook
@@ -48,7 +49,16 @@ struct PDFReaderView: View {
                     }
                 }
 
-                if let documentURL, FileManager.default.fileExists(atPath: documentURL.path) {
+                if book.localFileName.isEmpty {
+                    ZTCard {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Label("手动输入资料", systemImage: "text.alignleft")
+                                .font(.system(size: 15, weight: .semibold))
+                            Text("这份资料没有 PDF 文件，下面展示你手动输入的原文。")
+                                .font(.system(size: 12)).foregroundStyle(ZT.muted)
+                        }
+                    }
+                } else if let documentURL, FileManager.default.fileExists(atPath: documentURL.path) {
                     PDFKitReader(url: documentURL, pageNumber: selectedPage)
                         .frame(height: 430)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
