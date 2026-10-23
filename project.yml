@@ -1,0 +1,24 @@
+name: ZhiTu
+options:
+  deploymentTarget:
+    iOS: "17.0"
+  bundleIdPrefix: com.sbcnmsc
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    GENERATE_INFOPLIST_FILE: YES
+targets:
+  ZhiTu:
+    type: application
+    platform: iOS
+    sources:
+      - path: ZhiTu-iOS-source/ZhiTu
+        excludes:
+          - Info.plist.notes.md
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sbcnmsc.ZhiTu
+        INFOPLIST_KEY_CFBundleDisplayName: 知图
+        SWIFT_EMIT_LOC_STRINGS: YES
