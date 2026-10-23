@@ -57,11 +57,13 @@ final class KnowledgePoint {
     var bookTitle: String
     var chapter: String
     var pageNumber: Int
+    var evidenceText: String
     var lastReviewedAt: Date?
     var nextReviewAt: Date?
 
     init(title: String, summary: String, mastery: Double = 0.2,
-         bookTitle: String = "示例教材", chapter: String = "第一章", pageNumber: Int = 1) {
+         bookTitle: String = "示例教材", chapter: String = "第一章", pageNumber: Int = 1,
+         evidenceText: String = "") {
         self.id = UUID()
         self.title = title
         self.summary = summary
@@ -69,6 +71,7 @@ final class KnowledgePoint {
         self.bookTitle = bookTitle
         self.chapter = chapter
         self.pageNumber = pageNumber
+        self.evidenceText = evidenceText
     }
 }
 
@@ -99,9 +102,11 @@ final class StudyQuestion {
     var explanation: String
     var sourceBook: String
     var sourcePage: Int
+    var sourceEvidence: String
 
     init(pointTitle: String, stem: String, options: [String], correctAnswer: String,
-         explanation: String, sourceBook: String = "示例教材", sourcePage: Int = 1) {
+         explanation: String, sourceBook: String = "示例教材", sourcePage: Int = 1,
+         sourceEvidence: String = "") {
         self.id = UUID()
         self.pointTitle = pointTitle
         self.stem = stem
@@ -110,6 +115,7 @@ final class StudyQuestion {
         self.explanation = explanation
         self.sourceBook = sourceBook
         self.sourcePage = sourcePage
+        self.sourceEvidence = sourceEvidence
     }
 
     var options: [String] {
