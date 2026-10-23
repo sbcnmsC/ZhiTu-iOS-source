@@ -30,15 +30,37 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate --spec project.yml
 
+      - name: List schemes
+        run: xcodebuild -list -project ZhiTu.xcodeproj
+
       - name: Build for iOS Simulator
+        shell: bash
         run: |
+          set -o pipefail
           xcodebuild \
             -project ZhiTu.xcodeproj \
             -scheme ZhiTu \
             -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             clean build | tee xcodebuild.log
+
+      - name: Package simulator app
+        if: success()
+        run: |
+          APP_PATH="build/DerivedData/Build/Products/Debug-iphonesimulator/ZhiTu.app"
+          test -d "$APP_PATH"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" build/ZhiTu-Simulator.app.zip
+
+      - name: Upload simulator build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZhiTu-iOS-Simulator-App
+          path: build/ZhiTu-Simulator.app.zip
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Upload build log
         if: always()
@@ -47,3 +69,4 @@ jobs:
           name: xcodebuild-log
           path: xcodebuild.log
           if-no-files-found: ignore
+          retention-days: 7
