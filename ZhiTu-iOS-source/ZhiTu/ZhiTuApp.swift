@@ -6,7 +6,9 @@ struct ZhiTuApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             StudyBook.self,
+            BookPage.self,
             KnowledgePoint.self,
+            KnowledgeEdge.self,
             StudyQuestion.self,
             AnswerAttempt.self,
             ReviewRecord.self
