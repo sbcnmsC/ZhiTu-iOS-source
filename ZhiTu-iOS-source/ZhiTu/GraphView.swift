@@ -133,10 +133,12 @@ struct GraphView: View {
         var result: [Int: CGPoint] = [0: center]
         let count = max(graphTitles.count - 1, 1)
         for index in 1..<graphTitles.count {
-            let angle = (Double(index - 1) / Double(count)) * 2 * Double.pi - Double.pi / 2
+            let angle: Double = (Double(index - 1) / Double(count)) * 2.0 * Double.pi - Double.pi / 2.0
+            let radiusX = min(size.width * 0.34, 130)
+            let radiusY = min(size.height * 0.31, 190)
             result[index] = CGPoint(
-                x: center.x + cos(angle) * min(size.width * 0.34, 130),
-                y: center.y + sin(angle) * min(size.height * 0.31, 190)
+                x: center.x + CGFloat(Foundation.cos(angle)) * radiusX,
+                y: center.y + CGFloat(Foundation.sin(angle)) * radiusY
             )
         }
         return result
