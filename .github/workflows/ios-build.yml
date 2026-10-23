@@ -12,9 +12,9 @@ permissions:
 
 jobs:
   build:
-    name: Build iOS Simulator app
+    name: Build iOS app (Simulator + unsigned IPA)
     runs-on: macos-15
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,31 +42,75 @@ jobs:
             -scheme ZhiTu \
             -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath build/DerivedData \
+            -derivedDataPath build/SimulatorDerivedData \
             CODE_SIGNING_ALLOWED=NO \
-            clean build | tee xcodebuild.log
+            clean build | tee build/simulator-build.log
 
       - name: Package simulator app
         if: success()
         run: |
-          APP_PATH="build/DerivedData/Build/Products/Debug-iphonesimulator/ZhiTu.app"
+          mkdir -p build/artifacts
+          APP_PATH="build/SimulatorDerivedData/Build/Products/Debug-iphonesimulator/ZhiTu.app"
           test -d "$APP_PATH"
-          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" build/ZhiTu-Simulator.app.zip
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" build/artifacts/ZhiTu-Simulator.app.zip
 
-      - name: Upload simulator build
+      - name: Build for physical iPhone (unsigned)
+        shell: bash
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project ZhiTu.xcodeproj \
+            -scheme ZhiTu \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DeviceDerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            clean build | tee build/iphoneos-build.log
+
+      - name: Package unsigned IPA
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_PATH="build/DeviceDerivedData/Build/Products/Debug-iphoneos/ZhiTu.app"
+          test -d "$APP_PATH"
+          mkdir -p build/ipa/Payload build/artifacts
+          ditto "$APP_PATH" build/ipa/Payload/ZhiTu.app
+          cd build/ipa
+          /usr/bin/zip -qry ../artifacts/ZhiTu-unsigned.ipa Payload
+          test -s ../artifacts/ZhiTu-unsigned.ipa
+          echo "Created unsigned IPA:"
+          ls -lh ../artifacts/ZhiTu-unsigned.ipa
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' Payload/ZhiTu.app/Info.plist
+          /usr/libexec/PlistBuddy -c 'Print :MinimumOSVersion' Payload/ZhiTu.app/Info.plist || true
+
+      - name: Upload IPA
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZhiTu-Unsigned-IPA
+          path: build/artifacts/ZhiTu-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload simulator app
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ZhiTu-iOS-Simulator-App
-          path: build/ZhiTu-Simulator.app.zip
+          path: build/artifacts/ZhiTu-Simulator.app.zip
           if-no-files-found: error
           retention-days: 7
 
-      - name: Upload build log
+      - name: Upload build logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: xcodebuild-log
-          path: xcodebuild.log
+          name: ZhiTu-build-logs
+          path: |
+            build/simulator-build.log
+            build/iphoneos-build.log
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 14
