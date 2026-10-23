@@ -11,7 +11,8 @@ struct ZhiTuApp: App {
             KnowledgeEdge.self,
             StudyQuestion.self,
             AnswerAttempt.self,
-            ReviewRecord.self
+            ReviewRecord.self,
+            AgentMessage.self
         ])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {

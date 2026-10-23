@@ -21,8 +21,14 @@ struct HomeView: View {
                             Text("把知识连起来，把学习留下来。").font(.system(size: 14)).foregroundStyle(ZT.muted)
                         }
                         Spacer()
-                        Image(systemName: "sparkle").font(.title2).foregroundStyle(ZT.blue)
-                            .frame(width: 44, height: 44).background(.white, in: Circle())
+                        NavigationLink {
+                            AgentView()
+                        } label: {
+                            Image(systemName: "sparkle").font(.title2).foregroundStyle(ZT.blue)
+                                .frame(width: 44, height: 44).background(.white, in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("打开学习 Agent")
                     }
 
                     ZTCard {
@@ -85,7 +91,7 @@ struct HomeView: View {
                             Image(systemName: "info.circle.fill").foregroundStyle(ZT.blue)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("演示数据").font(.system(size: 14, weight: .semibold))
-                                Text("当前教材、掌握度和题目用于验证界面流程。导入 PDF 和真实 AI 解析将在后续阶段接入。")
+                                Text("未导入教材时展示的是演示知识点。你可以从教材库导入 PDF，再使用 AI 拆解与学习 Agent。")
                                     .font(.system(size: 12)).foregroundStyle(ZT.muted)
                             }
                         }

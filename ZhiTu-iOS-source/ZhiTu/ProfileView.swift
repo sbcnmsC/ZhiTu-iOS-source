@@ -4,7 +4,12 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("学习资料") {
+                Section("学习助理") {
+                    NavigationLink {
+                        AgentView()
+                    } label: {
+                        Label("学习 Agent", systemImage: "bubble.left.and.bubble.right.fill")
+                    }
                     NavigationLink {
                         BookLibraryView()
                     } label: {

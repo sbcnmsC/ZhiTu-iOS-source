@@ -31,6 +31,7 @@ struct GraphView: View {
 
                 GeometryReader { proxy in
                     let positions = nodePositions(in: proxy.size)
+                    let nodeScale = min(max(min(proxy.size.width / 390, proxy.size.height / 680), 0.82), 1.05)
                     ZStack {
                         Canvas { context, _ in
                             for (a, b) in graphEdges {
@@ -52,7 +53,7 @@ struct GraphView: View {
                                 VStack(spacing: 5) {
                                     Circle()
                                         .fill(point.map { $0.mastery < 0.4 ? Color.orange.opacity(0.85) : ZT.blue } ?? ZT.green)
-                                        .frame(width: index == 0 ? 64 : 48, height: index == 0 ? 64 : 48)
+                                        .frame(width: CGFloat(index == 0 ? 60 : 44) * nodeScale, height: CGFloat(index == 0 ? 60 : 44) * nodeScale)
                                         .overlay {
                                             Image(systemName: index == 0 ? "circle.grid.3x3.fill" : "circle.fill")
                                                 .font(.system(size: 10))
@@ -60,11 +61,11 @@ struct GraphView: View {
                                         }
                                         .shadow(color: ZT.blue.opacity(0.15), radius: 8, y: 3)
                                     Text(title)
-                                        .font(.system(size: 11, weight: .semibold))
+                                        .font(.system(size: 11 * nodeScale, weight: .semibold))
                                         .foregroundStyle(ZT.ink)
                                         .lineLimit(1)
                                 }
-                                .frame(width: 78)
+                                .frame(width: 76 * nodeScale)
                             }
                             .buttonStyle(.plain)
                             .position(x: position.x, y: position.y)
@@ -135,8 +136,9 @@ struct GraphView: View {
         let count = Double(graphTitles.count - 1)
         for index in 1..<graphTitles.count {
             let angle = (Double(index - 1) / count) * 2.0 * Double.pi - Double.pi / 2.0
-            let radiusX = min(size.width * 0.34, 130)
-            let radiusY = min(size.height * 0.31, 190)
+            let layoutScale = min(max(min(size.width / 390, size.height / 680), 0.82), 1.05)
+            let radiusX = min(size.width * 0.32, 122 * layoutScale)
+            let radiusY = min(size.height * 0.29, 174 * layoutScale)
             result[index] = CGPoint(
                 x: center.x + CGFloat(Foundation.cos(angle)) * radiusX,
                 y: center.y + CGFloat(Foundation.sin(angle)) * radiusY

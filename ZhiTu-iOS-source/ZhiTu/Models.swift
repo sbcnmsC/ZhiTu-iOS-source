@@ -142,6 +142,24 @@ final class AnswerAttempt {
     }
 }
 
+
+@Model
+final class AgentMessage {
+    var id: UUID
+    var role: String
+    var content: String
+    var createdAt: Date
+    var relatedBookTitle: String?
+
+    init(role: String, content: String, relatedBookTitle: String? = nil) {
+        self.id = UUID()
+        self.role = role
+        self.content = content
+        self.createdAt = .now
+        self.relatedBookTitle = relatedBookTitle
+    }
+}
+
 @Model
 final class ReviewRecord {
     var id: UUID
